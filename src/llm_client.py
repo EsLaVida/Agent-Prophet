@@ -1,17 +1,18 @@
 from langchain_openai import ChatOpenAI
-from dotenv import load_dotenv
-import os
 
-load_dotenv()
+from config.settings import Settings, settings
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-if not OPENAI_API_KEY:
-    raise ValueError("Не найден OPENAI_API_KEY в файле .env")
+class LLMClient:
+    def __init__(self, config: Settings = settings) -> None:
+        self.config = config
+        self.client = ChatOpenAI(
+            model=self.config.llm_model,
+            base_url=self.config.llm_base_url,
+            temperature=self.config.llm_temperature,
+            api_key=self.config.openai_api_key,
+        )
 
-llm = ChatOpenAI(
-    model="xiaomi/mimo-v2-flash", 
-    base_url="https://openrouter.ai/api/v1",
-    temperature=0.4,
-    api_key=OPENAI_API_KEY)
+    def get_client(self) -> ChatOpenAI:
+        return self.client
 

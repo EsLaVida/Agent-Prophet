@@ -9,7 +9,7 @@ from langgraph.prebuilt import ToolNode
 from prophet import Prophet
 
 from config.prompts import sys_msg
-from src.llm_client import llm
+from src.llm_client import LLMClient
 from src.tools import get_prediction
 
 
@@ -22,6 +22,8 @@ class AgentState(TypedDict):
 
 class ForecastingAgent:
     def __init__(self) -> None:
+        self.llm_client = LLMClient()
+        self.llm = self.llm_client.get_client()
         self.tools_list = [get_prediction]
         self.tool_node = ToolNode(tools=self.tools_list)
         self.graph = self._build_graph()
@@ -37,7 +39,7 @@ class ForecastingAgent:
             else:
                 normalized_messages.append(msg)
 
-        llm_with_tools = llm.bind_tools(self.tools_list)
+        llm_with_tools = self.llm.bind_tools(self.tools_list)
         ai_msg = llm_with_tools.invoke([sys_msg] + normalized_messages)
         return {"messages": [ai_msg]}
 
