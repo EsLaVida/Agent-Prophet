@@ -1,7 +1,4 @@
 from langchain_core.tools import tool
-from langgraph.prebuilt import ToolNode
-from langchain_core.messages import SystemMessage, HumanMessage
-
 
 @tool
 def get_prediction(series_name: str, target_date: str):
@@ -12,9 +9,3 @@ def get_prediction(series_name: str, target_date: str):
     """
     # Мы можем вернуть просто текст, так как основные расчеты сделает predictor_node, перехватив вызов.
     return f"Подготовка прогноза для {series_name}..."
-
-
-
-tools_list = [get_prediction]
-
-tool_node = ToolNode(tools=tools_list)
